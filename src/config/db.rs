@@ -1,6 +1,8 @@
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use super::config::{Config};
 
+pub type DbPool = Pool<Postgres>;
+
 pub struct DbConnection {
     pub pool: Pool<Postgres>
 }

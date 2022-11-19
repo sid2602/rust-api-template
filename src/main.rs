@@ -1,6 +1,7 @@
 mod config;
 mod model;
 mod api;
+mod services;
 
 use std::net::TcpListener;
 

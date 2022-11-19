@@ -1,16 +1,11 @@
 use actix_web::{get, web::{self}, HttpResponse,};
-use sqlx::{Pool, Postgres, query_as};
 
-use crate::{model::user::User, config::CustomError::{CustomError, map_sqlx_error}};
-
-pub type DbPool = Pool<Postgres>;
-
+use crate::{config::{CustomError::{CustomError, map_sqlx_error}, db::DbPool}, services::user::UserService};
 
 #[get("/users")]
 pub async fn get_users(pool: web::Data<DbPool>) -> Result<HttpResponse, CustomError> {
 
-
-    let response = query_as!(User, "SELECT * FROM users").fetch_all(&**pool).await;
+    let response = UserService::get_users(pool).await;
 
     match response {
          Ok(resp) => return Ok(HttpResponse::Ok().json(resp)),
