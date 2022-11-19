@@ -41,20 +41,14 @@ impl ResponseError for CustomError {
     }
 }
 
-pub fn map_io_error(e: std::io::Error) -> CustomError {
-    match e.kind() {
-        std::io::ErrorKind::NotFound => CustomError::NotFound,
-        std::io::ErrorKind::PermissionDenied => CustomError::Forbidden,
-        _ => CustomError::Unknown,
+pub fn map_sqlx_error(e: Error) -> CustomError {
+
+    match e {
+        Error::RowNotFound => CustomError::NotFound,
+        Error::ColumnNotFound(_e) => CustomError::NotFound,
+        _ => CustomError::Unknown
     }
 }
-
-// pub fn map_sqlx_error(e: Error) -> CustomError {
-//     match e {
-//         Error::ColumnNotFound() => CustomError::NotFound,
-//         _ => CustomError::Unknown
-//     }
-// }
 
 #[derive(Serialize)]
 struct ErrorResponse {

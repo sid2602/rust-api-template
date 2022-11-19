@@ -1,7 +1,7 @@
-use actix_web::{get, post, web::{self}, App, HttpResponse, HttpServer, Responder, middleware::Logger,};
-use sqlx::{Pool, Postgres, Executor, postgres::PgQueryResult, Error, query_as};
+use actix_web::{get, web::{self}, HttpResponse,};
+use sqlx::{Pool, Postgres, query_as};
 
-use crate::{model::user::User, config::CustomError::{CustomError, map_io_error}};
+use crate::{model::user::User, config::CustomError::{CustomError, map_sqlx_error}};
 
 pub type DbPool = Pool<Postgres>;
 
@@ -14,6 +14,6 @@ pub async fn get_users(pool: web::Data<DbPool>) -> Result<HttpResponse, CustomEr
 
     match response {
          Ok(resp) => return Ok(HttpResponse::Ok().json(resp)),
-         Err(error) => return  Err(CustomError::Unknown)
+         Err(error) => return  Err(map_sqlx_error(error))
     }
 }
